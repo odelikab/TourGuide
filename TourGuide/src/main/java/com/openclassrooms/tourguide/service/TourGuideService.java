@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -96,13 +97,14 @@ public class TourGuideService {
 	}
 
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
-		List<Attraction> nearbyAttractions = new ArrayList<>();
-		for (Attraction attraction : gpsUtil.getAttractions()) {
-			if (rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
-				nearbyAttractions.add(attraction);
-			}
-		}
+		Map<Double, Attraction> distanceToAttraction = new TreeMap<>();
+		gpsUtil.getAttractions().forEach((a) -> {
+			double distance = rewardsService.getDistance(a, visitedLocation.location);
+			distanceToAttraction.put(distance, a);
+		});
 
+		List<Attraction> nearbyAttractions = new ArrayList<>(5);
+		nearbyAttractions = distanceToAttraction.values().stream().limit(5).collect(Collectors.toList());
 		return nearbyAttractions;
 	}
 
