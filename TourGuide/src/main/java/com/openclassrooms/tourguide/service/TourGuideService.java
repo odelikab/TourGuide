@@ -52,7 +52,7 @@ public class TourGuideService {
 			initializeInternalUsers();
 			logger.debug("Finished initializing users");
 		}
-		tracker = new Tracker(this);
+		tracker = new Tracker(this,rewardsService);
 		addShutDownHook();
 	}
 
