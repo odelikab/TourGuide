@@ -58,10 +58,9 @@ public class Tracker extends Thread {
 			stopWatch.start();
 
 			for (User user : users) {
-
-				CompletableFuture.supplyAsync(() -> {
-					return gpsUtil.getUserLocation(user.getUserId());
-				}, executor).thenApplyAsync(v -> user.addToVisitedLocations(v), executor)
+				
+						CompletableFuture.supplyAsync(() -> gpsUtil.getUserLocation(user.getUserId()), executor)
+						.thenAcceptAsync(v -> user.addToVisitedLocations(v), executor)
 						.thenAcceptAsync(v -> rewardsService.calculateRewards(user), executor);
 			}
 
